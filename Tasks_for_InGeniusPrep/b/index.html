@@ -1,0 +1,181 @@
+<!--Created by Harsh Baheti for recruitment tasks requirement at InGenius Prep-->
+<!DOCTYPE html>
+<html lang='en' class=''>
+<head>
+<meta charset='UTF-8'>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,400,500">
+</head>
+<body>
+<div id="container">
+</div>
+<script src='https://cdnjs.cloudflare.com/ajax/libs/react/0.14.7/react.min.js'></script>
+<script src='https://cdnjs.cloudflare.com/ajax/libs/react/0.14.7/react-dom.js'></script>
+<script id="rendered-js">
+//import { withStyles } from '@material-ui/core/styles';
+
+const styles = {
+  students: {
+    backgroundColor: 'red',
+  },
+};
+
+class students extends React.Component 
+{
+  constructor(props)
+  {
+    super(props);
+    this.state = {};
+    this.state.students = [
+    {
+      id: 1,
+      counselor: 'Tony Stark',
+      role: 'Training, practice',
+      hours_used: 12,
+      student_name: 'Peter Parker',
+      last_access_date: '12/02/2017' },
+    {
+      id: 2,
+      counselor: 'Tony Stark',
+      role: 'Tests',
+      hours_used: 15,
+      student_name: 'Barry Allen',
+      last_access_date: '11/05/2018' },
+    {
+      id: 3,
+      counselor: 'Bruce Wayne',
+      role: 'Defence',
+      hours_used: 14,
+      student_name: 'Peter Maximoff',
+      last_access_date: '06/10/2018' }];
+  }
+  handleRowDel(student) 
+  {
+    var index = this.state.students.indexOf(student);
+    this.state.students.splice(index, 1);
+    this.setState(this.state.students);
+  }
+
+  handleAddEvent(evt) 
+  {
+    var id = (+new Date() + Math.floor(Math.random() * 999999)).toString(36);
+    var student = {
+      id: id,
+      student_name: "",
+      counselor: "",
+      hours_used: 0,
+      role: "",
+      last_access_date: ""
+      };
+    this.state.students.push(student);
+    this.setState(this.state.students);
+  }
+
+  handlestudentTable(evt) 
+  {
+    var item = 
+    {
+      id: evt.target.id,
+      name: evt.target.name,
+      value: evt.target.value 
+    };
+
+    var students = this.state.students.slice();
+    var newstudents = students.map(function (student) 
+    {
+      for (var key in student) 
+      {
+        if (key == item.name && student.id == item.id) 
+        {
+          student[key] = item.value;
+        }
+      }
+      return student;
+    });
+    this.setState({ students: newstudents });
+  }
+  render() {
+
+    return (
+      React.createElement("div", null,
+      React.createElement(studentTable, { onstudentTableUpdate: this.handlestudentTable.bind(this), onRowAdd: this.handleAddEvent.bind(this), onRowDel: this.handleRowDel.bind(this), students: this.state.students})));
+  }}
+
+class studentTable extends React.Component {
+
+  render() 
+  {
+    var onstudentTableUpdate = this.props.onstudentTableUpdate;
+    var rowDel = this.props.onRowDel;
+    var student = this.props.students.map(function (student) 
+    {
+      return React.createElement(studentRow, { onstudentTableUpdate: onstudentTableUpdate, student: student, onDelEvent: rowDel.bind(this), key: student.id });
+    });
+    return (
+      React.createElement("div", null,
+      //,
+      React.createElement("table", { className: "table table-bordered" },
+      React.createElement("thead", null,
+      React.createElement("tr", {
+              style: {
+                color: "black",
+                backgroundColor: "silver",
+                fontFamily: "Arial",
+                padding: 10
+              }
+            },
+      React.createElement("th", null, "Student"),
+      React.createElement("th", null, "Counselor"),
+      React.createElement("th", null, "Hours Used"),
+      React.createElement("th", null, "Counselor Role"),
+      React.createElement("th", null, "Date of Last Access"))),
+      React.createElement("tbody", null,
+      student)),
+      React.createElement("button", { type: "button", onClick: this.props.onRowAdd, className: "btn btn-success pull-right", style: { backgroundColor: "silver", padding: 5 }}, "+")
+      ));
+  }}
+
+
+class studentRow extends React.Component {
+  onDelEvent() {
+    this.props.onDelEvent(this.props.student);
+  }
+  render() 
+  {
+    return (
+      React.createElement("tr", { className: "eachRow" },
+      React.createElement(EditableCell, { onstudentTableUpdate: this.props.onstudentTableUpdate, cellData: {
+          "type": "student_name",
+          value: this.props.student.student_name,
+          id: this.props.student.id } }),
+      React.createElement(EditableCell, { onstudentTableUpdate: this.props.onstudentTableUpdate, cellData: {
+          type: "counselor",
+          value: this.props.student.counselor,
+          id: this.props.student.id } }),
+      React.createElement(EditableCell, { onstudentTableUpdate: this.props.onstudentTableUpdate, cellData: {
+          type: "hours_used",
+          value: this.props.student.hours_used,
+          id: this.props.student.id } }),
+      React.createElement(EditableCell, { onstudentTableUpdate: this.props.onstudentTableUpdate, cellData: {
+          type: "role",
+          value: this.props.student.role,
+          id: this.props.student.id } }),
+      React.createElement(EditableCell, { onstudentTableUpdate: this.props.onstudentTableUpdate, cellData: {
+          type: "last_access_date",
+          value: this.props.student.last_access_date,
+          id: this.props.student.id } }),
+      React.createElement("td", { className: "del-cell" },
+      React.createElement("input", { type: "button", onClick: this.onDelEvent.bind(this), value: "X", className: "del-btn", style: { backgroundColor: "silver" }}))));
+  }}
+
+class EditableCell extends React.Component 
+{
+  render() {
+    return (
+      React.createElement("td", null,
+      React.createElement("input", { type: "text", name: this.props.cellData.type, id: this.props.cellData.id, value: this.props.cellData.value, onChange: this.props.onstudentTableUpdate })));
+  }}
+
+ReactDOM.render(React.createElement(students, null), document.getElementById('container'));
+</script>
+</body>
+</html>

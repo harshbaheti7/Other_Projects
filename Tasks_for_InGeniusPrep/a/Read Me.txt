@@ -1,0 +1,7 @@
+To run this code, please install scrapy
+Details given here:
+https://doc.scrapy.org/en/0.14/intro/install.html
+
+Script only downloads a subset of all available rows and a delay is introduced in between visiting webpages to abide with ethical and friendly web scraping.
+
+Not all fields are downloaded, but this can be done early by replicating the code for other fields. The purpose is to demonstrate how scraping can be done.
